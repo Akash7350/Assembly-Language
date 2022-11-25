@@ -1,0 +1,75 @@
+        
+        
+        
+        data segment
+            msg1 db 10,13,"The Descending Sequence is: $"
+            array db 37h,0f9h,0a3h,37h,08 
+            lgt dw 5
+            
+            data ends
+            
+            code segment
+                assume cs:code,ds:data
+                
+                start: mov ax,data
+                       mov ds,ax
+                       
+                       mov dx,lgt
+                       dec dx     
+                again: mov cx,dx
+                       mov si,0   
+                   L2: mov al,array[si]
+                       
+                       cmp al,array[si+1] 
+                       jnc L1   
+                       xchg al,array[si+1]
+                       mov array[si],al
+                       
+                   L1: inc si
+                       loop L2
+                       dec dx
+                       jnz again
+                        
+                        mov cx,lgt
+                        mov si,0
+                    L3: mov al,array[si]
+                        
+                        call display
+                        inc si
+                        loop L3
+                        
+                        mov ah,4ch
+                        int 21h
+                        
+              display:  mov bl,al
+                        shr al,4
+                        
+                        call disp
+                        
+                        mov al,bl
+                        and al,0fh
+                        call disp
+                                 
+                        mov dl,','
+                        mov ah,02h
+                        int 21h
+                        ret
+                        
+                  disp: cmp al,09
+                        jbe L4
+                        add al,07h
+                        
+                   L4:  add al,30h
+                        mov dl,al
+                        
+                        mov ah,02h
+                        int 21h
+                        ret 
+                        
+                        code ends
+                        end start
+                        
+                        
+                       
+            
+          
